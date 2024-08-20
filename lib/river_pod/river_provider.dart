@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod_koo/stream_subscription.dart';
+import 'package:flutter_riverpod_koo/widget/keyboard_unfocus_widget.dart';
 
 import 'river_notifier.dart';
 
 abstract class RiverProvider<T extends RiverNotifier<G>, G>
     extends ConsumerStatefulWidget {
-  const RiverProvider({super.key});
+  final bool outsideUnFocus;
+
+  const RiverProvider({super.key, this.outsideUnFocus = false});
 
   T createProvider(WidgetRef ref);
 
@@ -70,5 +73,10 @@ class RiverProviderState<T extends RiverNotifier<G>, G>
     return const SizedBox.shrink();
   }
 
-  Widget _buildProviderWidget(BuildContext context, Widget widget) => widget;
+  Widget _buildProviderWidget(BuildContext context, Widget child) {
+    final unFocus = widget.outsideUnFocus;
+    return unFocus ? KeyboardUnFocus(
+        child: child
+    ) : child;
+  }
 }
