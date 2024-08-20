@@ -7,9 +7,9 @@ import 'river_notifier.dart';
 
 abstract class RiverProvider<T extends RiverNotifier<G>, G>
     extends ConsumerStatefulWidget {
-  final bool outsideUnFocus;
+  bool outsideUnFocus() => false;
 
-  const RiverProvider({super.key, this.outsideUnFocus = false});
+  const RiverProvider({super.key});
 
   T createProvider(WidgetRef ref);
 
@@ -74,7 +74,7 @@ class RiverProviderState<T extends RiverNotifier<G>, G>
   }
 
   Widget _buildProviderWidget(BuildContext context, Widget child) {
-    final unFocus = widget.outsideUnFocus;
+    final unFocus = widget.outsideUnFocus();
     return unFocus ? KeyboardUnFocus(
         child: child
     ) : child;
