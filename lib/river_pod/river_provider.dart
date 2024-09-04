@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod_koo/enum/device_type.dart';
 import 'package:flutter_riverpod_koo/stream_subscription.dart';
 import 'package:flutter_riverpod_koo/widget/keyboard_unfocus_widget.dart';
+import 'package:flutter_riverpod_koo/widget/responsive_layout.dart';
 
 import 'river_notifier.dart';
 
@@ -13,7 +15,7 @@ abstract class RiverProvider<T extends RiverNotifier<G>, G>
 
   T createProvider(WidgetRef ref);
 
-  Widget build(BuildContext context, G provider, T notifier);
+  Widget build(BuildContext context, G provider, T notifier, DeviceType deviceData);
 
   @override
   ConsumerState createState() => RiverProviderState<T, G>();
@@ -55,20 +57,22 @@ class RiverProviderState<T extends RiverNotifier<G>, G>
         init = true;
       }
 
-      return Stack(
-        fit: StackFit.expand,
-        children: [
-          _buildProviderWidget(
-              context,
-              widget.build(context, provider, notifier)
-          ),
-          if (riverProvider is AppStreamSubscription)
-            const Align(
-              alignment: Alignment.center,
-              child: CircularProgressIndicator(),
-            )
-        ],
-      );
+      return ResponsiveLayout(builder: (context, deviceData) {
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            _buildProviderWidget(
+                context,
+                widget.build(context, provider, notifier, deviceData)
+            ),
+            if (riverProvider is AppStreamSubscription)
+              const Align(
+                alignment: Alignment.center,
+                child: CircularProgressIndicator(),
+              )
+          ],
+        );
+      });
     }
     return const SizedBox.shrink();
   }
